@@ -4,39 +4,84 @@
 #include "matrix.h"
 
 /*
-** creating matrix requires dimensions (#rows, #columns) and data-type.
+** creating matrix requires dimensions (#rows, #columns).
 ** Data Type is casted when the function returns the memory chunk
 */
 
-void ** matalloc(int rows, int columns, size_t size){
-    void ** matrix;
-    unsigned int i;
-    matrix = calloc(rows, size);
-    for(i = 0; i < rows; i ++){
-        matrix[i] = calloc(columns, size);
-        printf("sizeof matrix[%d] : %d\n", i, sizeof(matrix[i]));
+Matrix * matalloc(int rows, int columns){
+    Matrix * mat = (Matrix *)malloc(sizeof(Matrix));
+    mat->rows = rows;
+    mat->cols = columns;
+    mat->pointer = (float **)calloc(mat->rows, sizeof(float));
+    unsigned int i, j;
+    // matrix = calloc(rows, size);
+    for(i = 0; i < mat->rows; i ++){
+        mat->pointer[i] = (float *)calloc(mat->cols, sizeof(float));
     }
-    printf("sizeof matrix: %d\n", sizeof(matrix));
-    return matrix;
+    return mat; 
+}
+
+Matrix * add_matrix(Matrix * a, Matrix * b){
+    printf("a rows = %d, a cols %d, b rows %d, b cols %d\n", a->rows, a->cols, b->rows, b->cols);
+    if(a->rows != b->rows & a->cols != b->cols){
+        printf("a rows = %d, a cols %d, b rows %d, b cols %d\n", a->rows, a->cols, b->rows, b->cols);
+        printf("Columns are not same");
+        return NULL;
+    }
+    Matrix * c = matalloc(a->rows, a->cols);
+    int i, j;   
+
+    for(i = 0; i < a->rows; i ++){
+        for (j = 0; j < a->cols; j++) {
+            c->pointer[i][j] = a->pointer[i][j] + b->pointer[i][j];
+        }
+    }
+    return c;
+}
+
+Matrix * sub_matrix(Matrix * a, Matrix * b){
+    if (a->rows != b->rows & a->cols != b->cols){
+        return NULL;
+    }
+    Matrix * d = matalloc(a->rows, a->cols);
+    Matrix * c;
+    int i, j;
+    for (i = 0; i < a->rows; i ++) {
+        for (j = 0; j < a->cols; j ++) {
+            d->pointer[i][j] = -b->pointer[i][j];
+        }
+    }
+    c = add_matrix(a, d);
+    return c;
 }
 
 int main(){
-    int ** int_mat = (int **)matalloc(3,3, sizeof(int));
+    int r, c;
+    Matrix * mat, * mat1, * mat2;
+    float ** mat_value, ** mat_value1;
     int i, j;
-    for(i = 0; i < 3; i ++){
-        // int_mat[i] = (int *)int_mat[i];
-        for(j = 0; j < 3; j ++){
-            scanf("%d", &int_mat[i][j]);
+    r = 3;
+    c = 3;
+    mat = (Matrix*)matalloc(r, c);
+    mat1 = (Matrix *)matalloc(3,4);
+    mat_value = mat->pointer;
+    mat_value1 = mat1->pointer;
+    for(i = 0; i < r; i ++){
+        for(j = 0; j < c; j ++){
+            printf("%f\t", mat_value[i][j]);
         }
-        // printf("%s", int_mat[i]);
+        printf("\n");
     }
-
-    for(i = 0; i < 3; i ++){
-        for(j = 0; j < 3; j ++){
-            printf("int_mat[%d][%d] = %d\n", i, j, int_mat[i][j]);
+    mat2 = add_matrix(mat, mat1);
+    if(mat2 == NULL){
+        printf("Matrix2 value is NULL\n");
+    }else{
+        for(i = 0; i < mat2->rows; i ++){
+            for(j = 0; j < mat2->cols; j ++){
+                printf("[%d][%d] = %f\t", i, j, mat2->pointer[i][j]);
+            }
+            printf("\n");
         }
     }
-    printf("Sizeof int_mat: %d\n", sizeof(int_mat[0][0]));
-    printf("sizeof(int): %d  sizeof(void): %d\n", sizeof(int), sizeof(void));
-    return (0);
+    return 0;
 }
