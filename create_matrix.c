@@ -17,6 +17,9 @@ Matrix * matalloc(int rows, int columns){
     // matrix = calloc(rows, size);
     for(i = 0; i < mat->rows; i ++){
         mat->pointer[i] = (float *)calloc(mat->cols, sizeof(float));
+        for (j = 0; j < mat->cols; j ++) {
+            mat->pointer[i][j] = i+j;
+        }
     }
     return mat; 
 }
@@ -55,9 +58,27 @@ Matrix * sub_matrix(Matrix * a, Matrix * b){
     return c;
 }
 
+Matrix * multiply_matrix(Matrix * a, Matrix * b){
+    if (a->cols != b->rows) {
+        return NULL;
+    }else{
+        Matrix * c = matalloc(a->rows, b->cols);
+        int i, j, k;
+        for (i = 0; i < c->rows; i ++) {
+            for (j = 0; j < c->cols; j ++) {
+                c->pointer[i][j] = 0;
+                for (k = 0; k < a->cols; k ++) {
+                    c->pointer[i][j] += a->pointer[i][k]*b->pointer[k][j];
+                }
+            }
+        }
+        return c;
+    }
+}
+
 int main(){
     int r, c;
-    Matrix * mat, * mat1, * mat2;
+    Matrix * mat, * mat1, * mat2, * mat3;
     float ** mat_value, ** mat_value1;
     int i, j;
     r = 3;
@@ -82,6 +103,13 @@ int main(){
             }
             printf("\n");
         }
+    }
+    mat3 = multiply_matrix(mat, mat1);
+    for (i = 0; i < mat3->rows; i ++) {
+        for (j = 0; j < mat3->cols; j ++) {
+            printf("[%d][%d] = %f\t", i, j, mat3->pointer[i][j]);
+        }
+        printf("\n");
     }
     return 0;
 }
