@@ -1,3 +1,8 @@
+/*
+ * @author Tanisha R. Bhayani
+ * 24th November, 2018
+ */
+
 #include <stddef.h>
 
 typedef struct matrix{

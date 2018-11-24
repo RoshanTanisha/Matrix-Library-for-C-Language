@@ -1,3 +1,9 @@
+/**
+ * @author Tanisha R. Bhayani
+ * 24th November, 2018
+ * Main file where all the functions are defined.
+ **/
+
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
