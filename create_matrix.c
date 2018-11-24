@@ -8,6 +8,16 @@
 ** Data Type is casted when the function returns the memory chunk
 */
 
+Matrix * multiply_scalar_value(Matrix * a, float b){
+    int i, j;
+    for (i = 0; i < a->rows; i ++) {
+        for (j = 0; j < a->cols; j++){
+            a->pointer[i][j] *= b;
+        }
+    }
+    return a;
+}
+
 Matrix * matalloc(int rows, int columns){
     Matrix * mat = (Matrix *)malloc(sizeof(Matrix));
     mat->rows = rows;
@@ -22,6 +32,17 @@ Matrix * matalloc(int rows, int columns){
         }
     }
     return mat; 
+}
+
+Matrix * get_matrix(Matrix * a){
+    Matrix * d = matalloc(a->rows, a->cols);
+    int i, j;
+    for (i = 0; i < d->rows; i ++) {
+        for (j = 0; j < d->cols; j ++) {
+            d->pointer[i][j] = a->pointer[i][j];
+        }
+    }
+    return d;
 }
 
 Matrix * add_matrix(Matrix * a, Matrix * b){
@@ -46,15 +67,17 @@ Matrix * sub_matrix(Matrix * a, Matrix * b){
     if (a->rows != b->rows & a->cols != b->cols){
         return NULL;
     }
-    Matrix * d = matalloc(a->rows, a->cols);
-    Matrix * c;
-    int i, j;
-    for (i = 0; i < a->rows; i ++) {
-        for (j = 0; j < a->cols; j ++) {
-            d->pointer[i][j] = -b->pointer[i][j];
-        }
-    }
-    c = add_matrix(a, d);
+    // Matrix * d = matalloc(a->rows, a->cols);
+    // Matrix * c;
+    // int i, j;
+    // for (i = 0; i < a->rows; i ++) {
+    //     for (j = 0; j < a->cols; j ++) {
+    //         d->pointer[i][j] = -b->pointer[i][j];
+    //     }
+    // }
+    Matrix * d = get_matrix(b);
+    multiply_scalar_value(d, -1);
+    Matrix * c = add_matrix(a, d);
     return c;
 }
 
@@ -76,6 +99,26 @@ Matrix * multiply_matrix(Matrix * a, Matrix * b){
     }
 }
 
+Matrix * add_scalar_value(Matrix * a, float b){
+    int i, j;
+    for (i = 0; i < a->rows; i++) {
+        for (j = 0; j < a->cols; j++) {
+            a->pointer[i][j] += b;
+        }
+    }
+    return a;
+}
+
+void print_matrix(Matrix * a){
+    int i, j;
+    for (i = 0; i < a->rows; i ++) {
+        for (j = 0; j < a->cols; j ++) {
+            printf("Matrix[%d][%d] = %f\t", i, j, a->pointer[i][j]);
+        }
+        printf("\n");
+    }
+}
+
 int main(){
     int r, c;
     Matrix * mat, * mat1, * mat2, * mat3;
@@ -85,31 +128,21 @@ int main(){
     c = 3;
     mat = (Matrix*)matalloc(r, c);
     mat1 = (Matrix *)matalloc(3,4);
-    mat_value = mat->pointer;
     mat_value1 = mat1->pointer;
-    for(i = 0; i < r; i ++){
-        for(j = 0; j < c; j ++){
-            printf("%f\t", mat_value[i][j]);
-        }
-        printf("\n");
-    }
+    printf("Initial Matrix value\n");
+    print_matrix(mat);
     mat2 = add_matrix(mat, mat1);
-    if(mat2 == NULL){
-        printf("Matrix2 value is NULL\n");
-    }else{
-        for(i = 0; i < mat2->rows; i ++){
-            for(j = 0; j < mat2->cols; j ++){
-                printf("[%d][%d] = %f\t", i, j, mat2->pointer[i][j]);
-            }
-            printf("\n");
-        }
-    }
+    printf("Matrix value after addition\n");
+    print_matrix(mat2);
     mat3 = multiply_matrix(mat, mat1);
-    for (i = 0; i < mat3->rows; i ++) {
-        for (j = 0; j < mat3->cols; j ++) {
-            printf("[%d][%d] = %f\t", i, j, mat3->pointer[i][j]);
-        }
-        printf("\n");
-    }
+    printf("Matrix value after multiplication\n");
+    print_matrix(mat3);
+    mat3 = add_scalar_value(mat3, 4);
+    printf("After adding scalar value\n");
+    print_matrix(mat3);
+    printf("After multiplying scalar value\n");
+    mat3 = multiply_scalar_value(mat3, 2);
+    print_matrix(mat3);
+
     return 0;
 }
