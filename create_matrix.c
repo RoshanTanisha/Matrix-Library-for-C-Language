@@ -34,7 +34,7 @@ Matrix * matalloc(int rows, int columns){
     return mat; 
 }
 
-Matrix * get_matrix(Matrix * a){
+Matrix * get_new_matrix(Matrix * a){
     Matrix * d = matalloc(a->rows, a->cols);
     int i, j;
     for (i = 0; i < d->rows; i ++) {
@@ -75,7 +75,7 @@ Matrix * sub_matrix(Matrix * a, Matrix * b){
     //         d->pointer[i][j] = -b->pointer[i][j];
     //     }
     // }
-    Matrix * d = get_matrix(b);
+    Matrix * d = get_new_matrix(b);
     multiply_scalar_value(d, -1);
     Matrix * c = add_matrix(a, d);
     return c;
