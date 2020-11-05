@@ -124,6 +124,9 @@ Matrix * multiply_matrix(Matrix * a, Matrix * b){
 }
 
 Matrix * add_scalar_value(Matrix * a, float b){
+    if (a == NULL) {
+        return NULL;
+    }
     int i, j;
     for (i = 0; i < a->rows; i++) {
         for (j = 0; j < a->cols; j++) {
@@ -133,6 +136,40 @@ Matrix * add_scalar_value(Matrix * a, float b){
     return a;
 }
 
+float deteminant(Matrix * a) {
+    if (a == NULL) {
+        return INFINITY;
+    }
+    float det = 0;
+    int i, j, k;
+    Matrix * mat[a->cols];
+    if(check_square_matrix(a)) {
+        if (a->cols == 1) {
+            return a->pointer[0][0];
+        }
+        for (i = 0; i < a->cols; i ++) {
+            mat[i] = matalloc(a->cols - 1, a->rows - 1);
+            for (j = 1; j <= mat[i]->cols; j ++) {
+                for (k = 0; k < mat[i]->rows; k ++) {
+                    if (k < i) {
+                        mat[i]->pointer[j-1][k] = a->pointer[j][k];
+                    }else{
+                        mat[i]->pointer[j-1][k] = a->pointer[j][k+1];
+                    }
+                }
+            }
+            det += pow(-1, i+2)*a->pointer[0][i]*deteminant(mat[i]);
+        }
+        return det;
+    }
+    printf("Determinant of non-square matrix not possible\n");
+    return INFINITY;
+}
+
+bool check_square_matrix(Matrix * a){
+    return (a->cols == a->rows);
+}
+
 int main(){
     int r, c;
     Matrix * mat, * mat1, * mat2, * mat3;
@@ -140,11 +177,15 @@ int main(){
     int i, j;
     r = 3;
     c = 3;
-    mat = (Matrix*)matalloc(r, c);
-    mat1 = (Matrix *)matalloc(3,4);
+    mat = matalloc(r, c);
+    mat1 = matalloc(3,4);
 
     mat = initialize_matrix(mat);
     mat1 = initialize_matrix(mat1);
+
+    printf("mat\n");
+    print_matrix(mat);
+    printf("det(mat) = %f\n", deteminant(mat));
 
     mat_value1 = mat1->pointer;
 

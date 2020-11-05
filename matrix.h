@@ -4,11 +4,7 @@
  */
 
 #include <stddef.h>
-
-typedef struct matrix{
-    int rows, cols;
-    float ** pointer;
-}Matrix;
+#include "types.c"
 
 Matrix * create_matrix(int rows, int columns);
 Matrix * add_matrix(Matrix * a, Matrix * b);
@@ -19,4 +15,5 @@ Matrix * get_new_matrix(Matrix * a);
 Matrix * multiply_matrix(Matrix * a, Matrix * b);
 Matrix * add_scalar_value(Matrix * a, float b);
 float deteminant(Matrix * a);
+bool check_square_matrix(Matrix * a);
 void print_matrix(Matrix * a);
