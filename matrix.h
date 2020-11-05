@@ -18,4 +18,5 @@ Matrix * matalloc(int rows, int columns);
 Matrix * get_new_matrix(Matrix * a);
 Matrix * multiply_matrix(Matrix * a, Matrix * b);
 Matrix * add_scalar_value(Matrix * a, float b);
+float deteminant(Matrix * a);
 void print_matrix(Matrix * a);

@@ -2,3 +2,6 @@
 *.out
 *.txt
 *.xml
+.vscode/*
+*.dSYM
+*.out
